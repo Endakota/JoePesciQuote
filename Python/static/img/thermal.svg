@@ -1,0 +1,10 @@
+<svg width="300" height="300" xmlns="http://www.w3.org/2000/svg">
+
+ <g>
+  <title>Layer 1</title>
+  <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_9" y2="366.2" x2="148" y1="228.2" x1="148" stroke-width="10" stroke="#000" fill="none"/>
+  <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_10" y2="70.2" x2="150" y1="-67.8" x1="150" stroke-width="10" stroke="#000" fill="none"/>
+  <rect id="svg_11" height="160" width="213" y="67" x="43" stroke-width="10" stroke="#000" fill="none"/>
+  <text transform="matrix(5.70652 0 0 3.67924 -616.554 -284.017)" stroke="#000" xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" id="svg_12" y="124.66609" x="126.79428" stroke-width="0" fill="#000000">T</text>
+ </g>
+</svg>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../static/style.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('.get_arr').submit(function(event) {
+          // Отменяем стандартное поведение формы
+          event.preventDefault();
+  
+          // Отправляем AJAX-запрос на сервер
+          $.ajax({
+            type: 'POST',
+            url: '/get_arr',
+            data: $('.get_arr').serialize(),
+            success: function(response) {
+              // Обновляем содержимое блока с результатами
+              console.log(response)
+              document.getElementById("result").innerHTML = JSON.stringify(response.elements);
+            }
+          });
+        });
+        $('.get_par').submit(function(event) {
+          // Отменяем стандартное поведение формы
+          event.preventDefault();
+  
+          // Отправляем AJAX-запрос на сервер
+          $.ajax({
+            type: 'POST',
+            url: '/get_par',
+            data: $('.get_par').serialize(),
+            success: function(response) {
+              // Обновляем содержимое блока с результатами
+              console.log(response)
+              document.getElementById("result").innerHTML = JSON.stringify(response.elements);
+            }
+          });
+        });
+        $('.get_ser').submit(function(event) {
+          // Отменяем стандартное поведение формы
+          event.preventDefault();
+  
+          // Отправляем AJAX-запрос на сервер
+          $.ajax({
+            type: 'POST',
+            url: '/get_ser',
+            data: $('.get_ser').serialize(),
+            success: function(response) {
+              // Обновляем содержимое блока с результатами
+              console.log(response)
+              document.getElementById("result").innerHTML = JSON.stringify(response.elements);
+            }
+          });
+        });
+        $('#anzy').submit(function(event) {
+          // Отменяем стандартное поведение формы
+          event.preventDefault();
+  
+          // Отправляем AJAX-запрос на сервер
+          $.ajax({
+            type: 'POST',
+            url: '/analyze',
+            data: $('#anzy').serialize(),
+            success: function(response) {
+              // Обновляем содержимое блока с результатами
+              console.log(response)
+              document.getElementById("result").innerHTML = JSON.stringify(response.eq);
+            }
+          });
+        });
+      });
+    </script>
+
+</head>
+<body>
+    
+    <fieldset class="inputData">
+        <span class="text-center">Введите количество подсистем</span>
+        <div class="input-container">
+            <label>количество основных подсистем</label>		
+            <input type="number" class="num" required=""/>
+        </div>
+        
+        <div class="input-container">		
+            <label>Тип соединения</label>
+            <div>
+                <input type="radio" class = "type" name="type" value = "parallel"/>
+                <label for="type">Параллельное</label>
+            </div>
+            <div>
+                <input type="radio" class = "type" name="type" value = "serial"/>
+                <label for="type">Последовательное</label>
+            </div>
+            <!-- <input type="radio" name="serial" value = "Последовательное"/> -->
+        </div>
+        <button type="button" class="generate">Generate</button>
+        <button type="button" class="collect">Collect</button>
+    </fieldset> 
+    <div class="data">
+        <ul class = "data_ul">
+
+        </ul>
+    </div>
+    <div class="forms">
+      <form id = "arr" class = "get_arr" action="/get_arr" method="post">
+        <!-- <input type="text" class = "array" name="array"> -->
+        <textarea name="array" id="debug" cols="30" rows="5" form="arr"></textarea>
+        <br>
+        <button type="submit">Отправить</button>
+      </form> 
+      <form id = "par" class = "get_par" action="/get_par" method="post">
+          <!-- <input type="text" name="paral" class = "paral"> -->
+          <textarea name="paral" class="paral" cols="30" rows="5" form="par"></textarea>
+          <br>
+          <button class = "calc" type="submit">Параллельное вычисление</button>
+      </form>
+      <form id = "ser" class = "get_ser" action="/get_ser" method="post">
+          <!-- <input type="text" name="serial" class = "serial"> -->
+          <textarea name="serial" class="serial" cols="30" rows="5" form = "ser"></textarea>
+          <br>
+          <button class = "calc" type="submit">Последовательное вычисление</button>
+      </form> 
+    </div>  
+    <div>
+      <div id="result"></div>
+      <div>
+        <button id="copyPar">Копировать в "Параллельное вычисление"</button>
+        <br>
+        <button id="copySer">Копировать в "Последовательное вычисление"</button>
+        <br>
+        <button id="confirm">Подтвердить</button>
+        <form id = "anzy" action="/analyze" method="post">
+          <label for="">Окончательный результат <input type="text" name="res" id="res"></label>
+          <p>Введите нагрузку на систему &sigma; или &epsilon;</p>
+          <label for="">&sigma; = <input type="text" form="anzy" name="sigma"></label>
+          <label for="">&epsilon; = <input type="text" form="anzy" name="eps"></label>
+          
+          <button type="submit">Анализировать</button>
+        </form>
+        
+      </div>
+    </div>
+    
+    <script src="../static/index.js"></script>
+</body>
+</html>
