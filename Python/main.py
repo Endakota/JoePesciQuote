@@ -7,14 +7,14 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     return render_template("index.html")
-@app.route("/get_arr",methods=['POST','GET'])
-def get_arr():
-    print(request.form)
-    elements = ast.literal_eval(request.form["array"])
+# @app.route("/get_arr",methods=['POST','GET'])
+# def get_arr():
+#     print(request.form)
+#     elements = ast.literal_eval(request.form["array"])
     
-    elements = dp.splitArr(elements)
-    print(elements)
-    return jsonify({'elements': elements})
+#     elements = dp.splitArr(elements)
+#     print(elements)
+#     return jsonify({'elements': elements})
 @app.route("/get_par", methods=['POST','GET'])
 def get_par():
     print(request.form["paral"])
@@ -28,7 +28,7 @@ def get_ser():
     elements = ast.literal_eval(request.form["serial"])
     
     dp.serialStress(elements,elements)
-    f = open("res.config")
+    f = open("res.conf")
     string = f.read()
 
     elements = ast.literal_eval(string)

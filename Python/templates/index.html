@@ -10,22 +10,22 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
-        $('.get_arr').submit(function(event) {
-          // Отменяем стандартное поведение формы
-          event.preventDefault();
+        // $('.get_arr').submit(function(event) {
+        //   // Отменяем стандартное поведение формы
+        //   event.preventDefault();
   
-          // Отправляем AJAX-запрос на сервер
-          $.ajax({
-            type: 'POST',
-            url: '/get_arr',
-            data: $('.get_arr').serialize(),
-            success: function(response) {
-              // Обновляем содержимое блока с результатами
-              console.log(response)
-              document.getElementById("result").innerHTML = JSON.stringify(response.elements);
-            }
-          });
-        });
+        //   // Отправляем AJAX-запрос на сервер
+        //   $.ajax({
+        //     type: 'POST',
+        //     url: '/get_arr',
+        //     data: $('.get_arr').serialize(),
+        //     success: function(response) {
+        //       // Обновляем содержимое блока с результатами
+        //       console.log(response)
+        //       document.getElementById("result").innerHTML = JSON.stringify(response.elements);
+        //     }
+        //   });
+        // });
         $('.get_par').submit(function(event) {
           // Отменяем стандартное поведение формы
           event.preventDefault();
@@ -107,13 +107,18 @@
 
         </ul>
     </div>
+    <div>
+      <textarea class="workspace">
+      </textarea>
+      <button class = "change">Поменять значения</button>
+    </div>
     <div class="forms">
-      <form id = "arr" class = "get_arr" action="/get_arr" method="post">
+      <div id = "arr" class = "get_arr">
         <!-- <input type="text" class = "array" name="array"> -->
         <textarea name="array" id="debug" cols="30" rows="5" form="arr"></textarea>
         <br>
-        <button type="submit">Отправить</button>
-      </form> 
+        <button class = "get_arr">Отправить</button>
+      </div> 
       <form id = "par" class = "get_par" action="/get_par" method="post">
           <!-- <input type="text" name="paral" class = "paral"> -->
           <textarea name="paral" class="paral" cols="30" rows="5" form="par"></textarea>
@@ -139,14 +144,15 @@
           <label for="">Окончательный результат <input type="text" name="res" id="res"></label>
           <p>Введите нагрузку на систему &sigma; или &epsilon;</p>
           <label for="">&sigma; = <input type="text" form="anzy" name="sigma"></label>
-          <label for="">&epsilon; = <input type="text" form="anzy" name="eps"></label>
-          
+          <label for="">&epsilon; = <input type="text" form="anzy" name="eps"></label> 
+          <label for="">t0 = <input type="text" form="anzy" name="time0"></label> 
+          <label for="">t1 = <input type="text" form="anzy" name="time1"></label> 
           <button type="submit">Анализировать</button>
         </form>
-        
       </div>
     </div>
     
+    <script src="../static/set.js"></script>
     <script src="../static/index.js"></script>
 </body>
 </html>

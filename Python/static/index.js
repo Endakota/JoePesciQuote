@@ -87,7 +87,6 @@ function anotherData(ul){
     return data
 }
 
-
 generateBtn.addEventListener("click", ()=>{
     let ul = document.querySelector(".data_ul")
     let num = parseInt(document.querySelector(".num").value)

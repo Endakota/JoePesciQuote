@@ -172,7 +172,7 @@ def serialStress(elements:list, src):
       print("/////////////")
       
       print([replace_subarray(src, old, [str(final_result.lhs) + "=" + str(final_result.rhs)])])
-      with open("res.config", "w") as file:
+      with open("res.conf", "w") as file:
         file.write(str([replace_subarray(src, old, [str(final_result.lhs) + "=" + str(final_result.rhs)])]))
     else:
       eq = Eq(parse_expr(aaa[2:-2].split("=")[0]), parse_expr(aaa[2:-2].split("=")[1]))
