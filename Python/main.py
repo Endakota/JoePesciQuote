@@ -2,19 +2,13 @@ from flask import Flask, request, jsonify, render_template
 import ast
 import diploma as dp
 from sympy import *
+import json
 app = Flask(__name__)
 
 @app.route("/")
 def index():
     return render_template("index.html")
-# @app.route("/get_arr",methods=['POST','GET'])
-# def get_arr():
-#     print(request.form)
-#     elements = ast.literal_eval(request.form["array"])
-    
-#     elements = dp.splitArr(elements)
-#     print(elements)
-#     return jsonify({'elements': elements})
+
 @app.route("/get_par", methods=['POST','GET'])
 def get_par():
     print(request.form["paral"])
@@ -39,15 +33,15 @@ def analyze():
     input1 = request.form["sigma"]
     input2 = request.form["eps"]
     res = request.form["res"]
-    # eq = Eq(parse_expr(res.split("=")[0]),parse_expr(res.split("=")[1]))
-    if(input1 != ""):
-        res = res.replace(res.split("=")[0], input1)
-        eq = Eq(parse_expr(res.split("=")[0]), parse_expr(res.split("=")[1]))
-    elif(input2 != ""):
-        pass
+    print(input1, input2)
+    if(input2 != ""):
+        obj = dp.calculateSigma(res, "x(t)", input2)
+    elif(input1 != ""):
+        obj = dp.calculateEps(res, "sigma(t)", input1)
     else:
         pass
-    return jsonify({'eq': str(eq)})
+    print(obj)
+    return jsonify({'eq': str(obj["eq"]), 'x_s': json.dumps([str(s) for s in obj["x"]]), "sigmas": json.dumps([str(s) for s in obj["s"]]), "t":json.dumps([str(t) for t in obj["t"]])})
 
 if __name__ == "__main__":
     app.run(debug=True)

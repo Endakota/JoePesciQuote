@@ -1,6 +1,6 @@
 from sympy import *
 import re
-
+import numpy as np
 def changeX(string):
   # данная ф-я служит только для того, чтобы
   # заменить все иксы для дальнейшего использования
@@ -68,12 +68,13 @@ def serialStress(elements:list, src):
 
   for el in elements:
     
-    if(type(el) == list and len(el) == 1):
+    if(type(el) == list and len(el) == 1 and type(el[0])==str):
       isOk = True
       # эмпирическим путем заметили, что данное условие будет верным
       # во первых,  изначально назначили правилу соединения элементов
       # во вторых после вычисления парал-х элементов, получается у нас один элемент, который будет просто строкой
       # то есть [[e], [e+v]]
+      print(el[0])
       s2 = el[0].split("=")[1] # берется правая часть определяющ соотношения, так как левая часть это просто напряжение
       # а так же, пока будем полагать, что у нас в левой части будет только sigma
       # а в правой части функция f(x,dx/dt,t)
@@ -155,10 +156,12 @@ def serialStress(elements:list, src):
       print("Diff-ed")
       # pprint(deq)
       res = Eq(deq.lhs, simplify(parse_expr(str(deq.rhs).replace(integ, "("+str(integrand)+")"))))
-      
+      res = simplify(res)
+      print(res)
       print("Final_res")
       # result = Eq(eq.lhs, simplify(dsolve(res, eq.lhs, hint="Bernoulli")))
-      final_result = simplify(dsolve(res, eq.lhs, hint="Bernoulli"))
+      print(classify_ode(res, integrate(res.lhs)))
+      final_result = simplify(dsolve(res, eq.lhs, hint='nth_linear_constant_coeff_variation_of_parameters'))
       pprint(final_result)
       print(final_result)
     # integrand = solve(eq, "Integral(sigma_00(t)*exp(E_0001001_0*t/(eta_0001001_1 + eta_000100_1))*exp(E_000100_0*t/(eta_0001001_1 + eta_000100_1)), t)")[0]
@@ -189,3 +192,64 @@ def replace_subarray(arr, old_subarr, new_subarr):
         elif isinstance(subarr, list):
             replace_subarray(subarr, old_subarr, new_subarr)
     return arr
+def calculateSigma(eq_s, x, x_n):
+  arr = eq_s.split("=")
+  arr[0] = re.sub(r"_\d+", "", arr[0])
+  arr[1] = re.sub(r"x_\d+\(t\)", "x(t)", arr[1])
+  eq_s = "=".join(arr)
+  print("delete num",eq_s)
+  # Input the sigma or eps
+  eq_s = eq_s.replace(x, "({x_n})".format(x_n=x_n))
+  eq = simplify(Eq(parse_expr(eq_s.split("=")[0]), parse_expr(eq_s.split("=")[1])))
+  print("eq",eq)
+  T = np.linspace(0,5,100)
+  sigmas = []
+  xs = []
+  for t in T:
+    sigmas.append(eq.subs("t", t).rhs)
+    xs.append(parse_expr(x_n).subs("t",t))
+  print("x",xs)
+  print("s",sigmas)
+  
+  eq_s = str(eq.lhs)+"="+str(eq.rhs)
+  obj = {
+    "eq": eq_s,
+    "x": xs,
+    "s": sigmas,
+    "t":T
+  }
+  return obj
+def calculateEps(eq_s, s, s_n):
+  arr = eq_s.split("=")
+  arr[0] = re.sub(r"_\d+", "", arr[0])
+  arr[1] = re.sub(r"x_\d+\(t\)", "x(t)", arr[1])
+  eq_s = "=".join(arr)
+  print("delete num",eq_s)
+  # Input the sigma or eps
+  eq_s = eq_s.replace(s, "({s_n})".format(s_n=s_n))
+  eq = simplify(Eq(parse_expr(eq_s.split("=")[0]), parse_expr(eq_s.split("=")[1])))
+  print(eq)
+  try:
+    seq = dsolve(eq,parse_expr("x(t)"))
+  except ValueError:
+    seq = solve(eq,parse_expr("x(t)"))
+  T = np.linspace(0,5,100)
+  sigmas = []
+  xs = []
+  for t in T:
+    xs.append(seq.subs("t", t).rhs)
+    sigmas.append(parse_expr(s_n).subs("t",t))
+  print("x",xs)
+  print("s",sigmas)
+  
+  eq_s = str(seq.lhs)+"="+str(seq.rhs)
+  obj = {
+    "eq": eq_s,
+    "x": xs,
+    "s": sigmas,
+    "t":T
+  }
+  
+  
+  return obj
+  

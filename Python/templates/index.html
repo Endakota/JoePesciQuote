@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="../static/style.css">
-
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
@@ -70,20 +70,89 @@
             success: function(response) {
               // Обновляем содержимое блока с результатами
               console.log(response)
-              document.getElementById("result").innerHTML = JSON.stringify(response.eq);
+              document.getElementById("result").innerHTML = JSON.stringify(response["eq"])
+              var x = JSON.parse(response["x_s"]).map(x=>parseFloat(x))
+              var sigma = JSON.parse(response["sigmas"]).map(x=>parseFloat(x))
+              var T = JSON.parse(response["t"]).map(x=>parseFloat(x))
+              // console.log(x)
+              var sigma_x = {
+                x: x,
+                y: sigma,
+                type: 'scatter'
+              };
+              var sigma_t = {
+                x: T,
+                y: sigma,
+                type: 'scatter'
+              };
+              var x_t = {
+                x: T,
+                y: x,
+                type: 'scatter'
+              };
+              var layout = {
+                title: {
+                  text:'	&#963;(&#949;(t))',
+                  font: {
+                    family: 'Courier New, monospace',
+                    size: 24
+                  },
+                  xref: 'paper',
+                  x: 0.05,
+                  automargin: true,
+                },
+                xaxis: {
+                  title: {
+                    text: '&#949; Axis',
+                    font: {
+                      family: 'Courier New, monospace',
+                      size: 18,
+                      color: '#7f7f7f'
+                    }
+                  },
+                },
+                yaxis: {
+                  title: {
+                    text: '	&#963; Axis',
+                    font: {
+                      family: 'Courier New, monospace',
+                      size: 18,
+                      color: '#7f7f7f'
+                    }
+                  }
+                }
+              };
+              var data1 = [sigma_x];
+              var data2 = [sigma_t];
+              var data3 = [x_t];
+
+              Plotly.newPlot('myPlot1', data1,layout);
+              layout.title.text = "&#963;(t)"
+              layout.xaxis.title.text = "t"
+              layout.yaxis.title.text = "&#963;"
+              Plotly.newPlot('myPlot2', data2, layout);
+              layout.title.text = "&#949;(t)"
+              layout.xaxis.title.text = "t"
+              layout.yaxis.title.text = "&#949;"
+              Plotly.newPlot('myPlot3', data3, layout);
+              // document.getElementById("result").innerHTML += "\n"+JSON.stringify(response["x_s"])
+              // document.getElementById("result").innerHTML = "\n"+JSON.stringify(response.sigmas);
+
             }
           });
         });
       });
     </script>
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Comme:wght@200&display=swap" rel="stylesheet">
 </head>
 <body>
     
     <fieldset class="inputData">
-        <span class="text-center">Введите количество подсистем</span>
+        <span class="text-center">Введите входные параметры</span>
         <div class="input-container">
-            <label>количество основных подсистем</label>		
+            <label>Количество основных подсистем</label>		
             <input type="number" class="num" required=""/>
         </div>
         
@@ -108,26 +177,26 @@
         </ul>
     </div>
     <div>
-      <textarea class="workspace">
+      <textarea class="workspace" rows = "14" cols="35">
       </textarea>
       <button class = "change">Поменять значения</button>
     </div>
     <div class="forms">
       <div id = "arr" class = "get_arr">
         <!-- <input type="text" class = "array" name="array"> -->
-        <textarea name="array" id="debug" cols="30" rows="5" form="arr"></textarea>
+        <textarea name="array" id="debug" cols="25" rows="3" form="arr"></textarea>
         <br>
         <button class = "get_arr">Отправить</button>
       </div> 
       <form id = "par" class = "get_par" action="/get_par" method="post">
           <!-- <input type="text" name="paral" class = "paral"> -->
-          <textarea name="paral" class="paral" cols="30" rows="5" form="par"></textarea>
+          <textarea name="paral" class="paral" cols="25" rows="3" form="par"></textarea>
           <br>
           <button class = "calc" type="submit">Параллельное вычисление</button>
       </form>
       <form id = "ser" class = "get_ser" action="/get_ser" method="post">
           <!-- <input type="text" name="serial" class = "serial"> -->
-          <textarea name="serial" class="serial" cols="30" rows="5" form = "ser"></textarea>
+          <textarea name="serial" class="serial" cols="25" rows="3" form = "ser"></textarea>
           <br>
           <button class = "calc" type="submit">Последовательное вычисление</button>
       </form> 
@@ -135,13 +204,16 @@
     <div>
       <div id="result"></div>
       <div>
-        <button id="copyPar">Копировать в "Параллельное вычисление"</button>
-        <br>
-        <button id="copySer">Копировать в "Последовательное вычисление"</button>
-        <br>
-        <button id="confirm">Подтвердить</button>
+        <div class="control">
+          <button id="copyPar">Вставить в "Параллельное ..."</button>
+          <br>
+          <button id="copySer">Вставить в "Последовательное ..."</button>
+          <br>
+          <button id="confirm">Подтвердить</button>
+        </div>
+        
         <form id = "anzy" action="/analyze" method="post">
-          <label for="">Окончательный результат <input type="text" name="res" id="res"></label>
+          <label for="">Окончательный результат <br><textarea rows="5" cols="20" type="text" name="res" id="res"></textarea></label>
           <p>Введите нагрузку на систему &sigma; или &epsilon;</p>
           <label for="">&sigma; = <input type="text" form="anzy" name="sigma"></label>
           <label for="">&epsilon; = <input type="text" form="anzy" name="eps"></label> 
@@ -151,8 +223,25 @@
         </form>
       </div>
     </div>
+    <div id = "formula"></div>
+    <div style="grid-row: 3; grid-column: 1 / 4;" id = "graphs">
+      <div id="myPlot1"></div>
+      <div id="myPlot2"></div>
+      <div id="myPlot3"></div>
+    </div>
     
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <button id = "clicker"> Click</button>
     <script src="../static/set.js"></script>
     <script src="../static/index.js"></script>
+    
+    <script>
+      document.getElementById("clicker").addEventListener("click",()=>{
+
+        let formula = document.querySelector("#result").innerHTML
+        document.getElementById("formula").innerText = "$$" + formula.substring(1,formula.length - 1) + "$$";
+      })
+    </script>
 </body>
 </html>

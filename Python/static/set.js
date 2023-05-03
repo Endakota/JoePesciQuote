@@ -11,7 +11,7 @@ function set_arr(arr, depth="0",workspace){
                 arr[i] = `sigma_${depth}(t)=eta_${depth}_${i}*diff(x_${depth}(t),t)`
                 workspace.push(`eta_${depth}_${i}`)
             }else if(arr[i] == "T"){
-                arr[i] = `T_${depth}_${i}`
+                arr[i] = `sigma_${depth}(t)=T_${depth}_${i}`
                 workspace.push(`T_${depth}_${i}`)
             }
         }

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  
+</head>
+<body>
+    <!-- HTML -->
+<button id="open-modal">Открыть модальное окно</button>
+
+<!-- Модальное окно -->
+<div id="modal" style="display: none;">
+  <h2>Выберите вариант:</h2>
+  <input type="text" id="input" placeholder="Введите значение...">
+  <br>
+  <input type="radio" name="options" value="option1">Вариант 1<br>
+  <input type="radio" name="options" value="option2">Вариант 2<br>
+  <input type="radio" name="options" value="option3">Вариант 3<br>
+  <br>
+  <button id="ok">OK</button>
+  <button id="cancel">Отмена</button>
+</div>
+
+<script>
+  function showModal() {
+    return new Promise((resolve, reject) => {
+      const modal = document.getElementById('modal');
+      const input = document.getElementById('input');
+      const radioButtons = document.getElementsByName('options');
+      const okButton = document.getElementById('ok');
+      const cancelButton = document.getElementById('cancel');
+
+      // Обработчик для кнопки OK
+      okButton.addEventListener('click', () => {
+        // Находим выбранную радиокнопку
+        const checkedRadioButton = [...radioButtons].find(button => button.checked);
+        // Возвращаем объект с выбранным значением и значением из input
+        resolve({radioValue: checkedRadioButton.value, inputValue: input.value});
+        modal.style.display = 'none';
+      });
+
+      // Обработчик для кнопки Отмена
+      cancelButton.addEventListener('click', () => {
+        reject(new Error('Отменено пользователем'));
+        modal.style.display = 'none';
+      });
+
+      modal.style.display = 'block';
+    });
+  }
+
+  // Вызов модального окна и обработка промиса
+  const openModalButton = document.getElementById('open-modal');
+  openModalButton.addEventListener('click', async () => {
+    try {
+      const result = await showModal();
+      console.log(result); // Вывод выбранной радиокнопки и значения из input
+    } catch (error) {
+      console.log(error.message); // Вывод сообщения об ошибке
+    }
+  });
+</script>
+</body>
+</html>
