@@ -92,13 +92,14 @@ function anotherData(ul){
 }
 
 
-generateBtn.addEventListener("click", ()=>{
+generateBtn.addEventListener("click", async ()=>{
     let ul = document.querySelector(".data_ul")
     let num = parseInt(document.querySelector(".num").value)
     let type = document.querySelectorAll(".type")
     console.log(type.value)
     if(type[0].checked){
         type = "parallel"
+        
         
     }else{
         type = "serial"
@@ -107,7 +108,8 @@ generateBtn.addEventListener("click", ()=>{
     ul.ariaLabel = type
     for(let i = 0; i < num; i++){
         let li = document.createElement("li")
-        let value = prompt("Введите тип элемента ")
+
+        let value = await createPrompt()
         li.style.width = "50px";
         li.style.height = "50px"
         switch(value){
@@ -143,9 +145,51 @@ generateBtn.addEventListener("click", ()=>{
                 
                 break
         }
-        li.style.background="./img/elastic.svg"
+        
         ul.appendChild(li)
     }
+    const liElements = document.querySelectorAll('li:not(:has(ul))');
+    liElements.forEach((li) => {
+    li.addEventListener('dblclick', async (event) => {
+        let value = await createPrompt()
+        console.log(value)
+        li.style.width = "50px";
+        li.style.height = "50px"
+        switch(value){
+            case "elastic":
+                value = "e"
+                li.innerText=value
+                li.style.backgroundImage = "url('./static/img/elastic.svg')"
+                li.style.backgroundSize = "cover"
+                li.style.border = "1px solid black"
+                break
+            case "viscous":
+                value = "v"
+                li.style.backgroundImage = "url('./static/img/viscous.svg')"
+                li.style.backgroundSize = "cover"
+                li.innerText=value
+                li.style.border = "1px solid black"
+                break
+            case "thermal":
+                value = "T"
+                li.style.backgroundImage = "url('./static/img/thermal.svg')"
+                li.style.backgroundSize = "cover"
+                li.innerText=value
+                li.style.border = "1px solid black"
+                break
+            case "another":
+                li.style.width = ""
+                li.style.height = ""
+                generateUl(li, i, i)
+                
+                li.style.border = "none"
+                break
+            default:
+                
+                break
+        }
+    });
+    });
 })
 
 
@@ -154,11 +198,12 @@ async function generateUl(parent, index){
     // let result = await openModal2()
     let num = parseInt(prompt("Количество подсистем"))
     let type = prompt("Тип соединении")
+    
     ul.ariaLabel = type
     console.log(num, type)
     for(let i = 0; i < num; i++){
         let li = document.createElement("li")
-        let value = prompt("Введите тип элемента ")
+        let value = await createPrompt()
         console.log(value)
         li.style.width = "50px";
         li.style.height = "50px"
@@ -199,69 +244,81 @@ async function generateUl(parent, index){
     }
     parent.appendChild(ul)
 }
-function openModal2(){
+function selectPrompt(options=[
+    { value: 'elastic', label: 'elastic' },
+    { value: 'viscous', label: 'viscous' },
+    { value: 'thermal', label: 'thermal' },
+    { value: 'another', label: 'another' },
+  ]) {
     return new Promise((resolve, reject) => {
-        const modal = document.createElement('div');
-        modal.innerHTML = `
-          <label for="input1">Количество подсистем</label>
-          <input type="number" id="input1">
-          <br>
-          <label for="input2">Тип соединения</label>
-          <input type="text" id="input2">
-          <br>
-          <button id="submit">Submit</button>
-        `;
-        modal.style.position = 'fixed';
-        modal.style.top = '0';
-        modal.style.left = '50%';
-        modal.style.transform = 'translate(-50%, 0)';
-        modal.style.padding = '20px';
-        modal.style.border = '1px solid black';
-        modal.style.background = '#fff';
-        modal.style.zIndex = "1"
-        document.body.appendChild(modal);
-    
-        const input1 = document.querySelector('#input1');
-        const input2 = document.querySelector('#input2');
-       
-        const submit = document.querySelector('#submit');
-    
-        submit.addEventListener('click', () => {
-          const value1 = input1.value;
-          const value2 = input2.value;
-          
-          document.body.removeChild(modal);
-          resolve({value1, value2});
-        });
+      const inputElement = document.createElement('select');
+      options.forEach((option) => {
+        const optionElement = document.createElement('option');
+        optionElement.value = option.value;
+        optionElement.text = option.label;
+        inputElement.appendChild(optionElement);
       });
-}
-function openModal() {
+  
+      const okButton = document.createElement('button');
+      okButton.innerText = 'OK';
+      okButton.addEventListener('click', () => {
+        resolve(inputElement.value);
+        document.body.removeChild(promptContainer);
+      });
+  
+      const cancelButton = document.createElement('button');
+      cancelButton.innerText = 'Cancel';
+      cancelButton.addEventListener('click', () => {
+        reject();
+        document.body.removeChild(promptContainer);
+      });
+  
+      const promptContainer = document.createElement('div');
+      promptContainer.classList.add("prompt-container")
+      promptContainer.appendChild(inputElement);
+      promptContainer.appendChild(okButton);
+      promptContainer.appendChild(cancelButton);
+      document.body.appendChild(promptContainer);
+    });
+  }
+  function createPrompt(options=[
+    { value: 'elastic', label: 'elastic' },
+    { value: 'viscous', label: 'viscous' },
+    { value: 'thermal', label: 'thermal' },
+    { value: 'another', label: 'another' },
+  ]) {
+    // создаем новый контейнер для prompt
+    const promptContainer = document.createElement("div");
+    promptContainer.className = "prompt-container";
+  
+    // создаем элементы для ввода данных
+    const inputElement = document.createElement('select');
+      options.forEach((option) => {
+        const optionElement = document.createElement('option');
+        optionElement.value = option.value;
+        optionElement.text = option.label;
+        inputElement.appendChild(optionElement);
+      });
+    const button = document.createElement("button");
+    button.textContent = "OK";
+  
+    // добавляем элементы на контейнер
+    promptContainer.appendChild(inputElement);
+    promptContainer.appendChild(button);
+
+    // добавляем контейнер на страницу
+    document.body.appendChild(promptContainer);
+  
+    // // анимация входа
+    // promptContainer.classList.add("show");
+  
+    // возвращаем Promise, который зарезолвится при нажатии на кнопку OK
     return new Promise((resolve, reject) => {
-      const modal = document.createElement('div');
-      modal.innerHTML = `
-        <label for="input1">Введите тип элемента</label>
-        <input type="text" id="input1">
-        <br>
-        <button id="submit">Submit</button>
-      `;
-      modal.style.position = 'fixed';
-      modal.style.top = '0';
-      modal.style.left = '50%';
-      modal.style.transform = 'translate(-50%, 0)';
-      modal.style.padding = '20px';
-      modal.style.border = '1px solid black';
-      modal.style.background = '#fff';
-      document.body.appendChild(modal);
-  
-      const input1 = document.querySelector('#input1');
-     
-      const submit = document.querySelector('#submit');
-  
-      submit.addEventListener('click', () => {
-        const value1 = input1.value;
-        console.log(value1)
-        document.body.removeChild(modal);
-        resolve(value1);
+      button.addEventListener("click", () => {
+        // удаляем контейнер и очищаем слушатели событий
+        promptContainer.remove();
+        console.log(inputElement.value)
+        resolve(inputElement.value);
       });
     });
   }

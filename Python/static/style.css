@@ -115,10 +115,7 @@ ul:before{
     font-weight:bold;
     margin-left:-15px;
 }
-ul{
 
-	border: 1px solid black;
-}
 
 #result{
 	border: 1px solid black;
@@ -142,3 +139,40 @@ div:has(textarea.workspace){
 	border: 0;
 	border-left: 3px solid white;
 }
+
+.prompt-container {
+	position: fixed;
+	top: 0;
+	left: 50%;
+	transform: translate(-50%, 0);
+	z-index: 1000;
+	background-color: #fff;
+	border: 1px solid #ccc;
+	box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background-color:darkslategrey;
+	animation: slide-in 0.3s ease-out forwards;
+  opacity: 0;
+  }
+  @keyframes slide-in {
+	from {
+	  opacity: 0;
+	  transform: translateY(-100%);
+	}
+	to {
+	  opacity: 1;
+	  transform: translateY(0);
+	}
+  }
+  .prompt-container select {
+	background-color:rebeccapurple;
+	margin-bottom: 10px;
+  }
+  
+  .prompt-container button {
+	background-color:rebeccapurple;
+	margin: 5px;
+  }

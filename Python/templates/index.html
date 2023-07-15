@@ -95,31 +95,39 @@
                   text:'	&#963;(&#949;(t))',
                   font: {
                     family: 'Courier New, monospace',
-                    size: 24
+                    size: 28
                   },
                   xref: 'paper',
-                  x: 0.05,
+                  x: 0.1,
                   automargin: true,
                 },
                 xaxis: {
                   title: {
-                    text: '&#949; Axis',
+                    text: '&#949;',
                     font: {
                       family: 'Courier New, monospace',
-                      size: 18,
+                      size: 28,
                       color: '#7f7f7f'
                     }
                   },
+                  ticklen: 8,
+                  tickwidth: 4
                 },
                 yaxis: {
+                  
+                  
                   title: {
-                    text: '	&#963; Axis',
+                    text: '	&#963;',
+                   
                     font: {
                       family: 'Courier New, monospace',
-                      size: 18,
-                      color: '#7f7f7f'
+                      size: 28,
+                      color: '#7f7f7f',
+                      transform: "-90deg"
                     }
-                  }
+                  },
+                  ticklen: 8,
+                  tickwidth: 4
                 }
               };
               var data1 = [sigma_x];
@@ -132,8 +140,8 @@
               layout.yaxis.title.text = "&#963;"
               Plotly.newPlot('myPlot2', data2, layout);
               layout.title.text = "&#949;(t)"
-              layout.xaxis.title.text = "t"
               layout.yaxis.title.text = "&#949;"
+              layout.xaxis.title.text = "t"
               Plotly.newPlot('myPlot3', data3, layout);
               // document.getElementById("result").innerHTML += "\n"+JSON.stringify(response["x_s"])
               // document.getElementById("result").innerHTML = "\n"+JSON.stringify(response.sigmas);
@@ -219,11 +227,12 @@
           <label for="">&epsilon; = <input type="text" form="anzy" name="eps"></label> 
           <label for="">t0 = <input type="text" form="anzy" name="time0"></label> 
           <label for="">t1 = <input type="text" form="anzy" name="time1"></label> 
+          <label for="">Укажите &epsilon;(0)<input type="text" form="anzy" name="ics"></label>
           <button type="submit">Анализировать</button>
         </form>
       </div>
     </div>
-    <div id = "formula"></div>
+    <div id = "formula">$$\left(1 + \frac{\int \sigma{\left(t \right)} e^{\frac{E t}{\eta_{1} + \eta_{2}}}\, dt}{\eta_{1} + \eta_{2}}\right) e^{- \frac{E t}{\eta_{1} + \eta_{2}}}$$</div>
     <div style="grid-row: 3; grid-column: 1 / 4;" id = "graphs">
       <div id="myPlot1"></div>
       <div id="myPlot2"></div>
@@ -232,7 +241,6 @@
     
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <button id = "clicker"> Click</button>
     <script src="../static/set.js"></script>
     <script src="../static/index.js"></script>
     

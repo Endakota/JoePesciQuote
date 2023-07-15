@@ -33,11 +33,14 @@ def analyze():
     input1 = request.form["sigma"]
     input2 = request.form["eps"]
     res = request.form["res"]
+    t1 = request.form["time0"]
+    t2 = request.form["time1"]
+    x0 = request.form["ics"]
     print(input1, input2)
     if(input2 != ""):
-        obj = dp.calculateSigma(res, "x(t)", input2)
+        obj = dp.calculateSigma(res, "x(t)", input2, int(t1),int(t2), x0)
     elif(input1 != ""):
-        obj = dp.calculateEps(res, "sigma(t)", input1)
+        obj = dp.calculateEps(res, "sigma(t)", input1, int(t1), int(t2), x0)
     else:
         pass
     print(obj)
